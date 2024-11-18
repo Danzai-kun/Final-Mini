@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0F172A;
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: #1E293B;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            border: 1px solid #334155;
+            margin: 2rem auto;
+        }
+
+        .news-card {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+            border-color: #38BDF8;
+        }
+
+        h2 {
+            color: #38BDF8;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #38BDF8, #2563EB);
+        }
+
+        .news-title {
+            color: #38BDF8;
+            margin-bottom: 1rem;
+        }
+
+        .news-content {
+            color: #CBD5E1;
+            margin-bottom: 1rem;
+        }
+
+        .news-date {
+            color: #64748B;
+            font-size: 0.9rem;
+        }
+
+        .read-more {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .read-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: #F1F5F9;
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: center;
+            margin-left: 1rem;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: #F1F5F9;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <h2>Latest News</h2>
+            <a href="/staff/dashboard" class="btn-dashboard">Back to Dashboard</a>
+        </div>
+        
+        {% if news_list %}
+            {% for news in news_list %}
+                <div class="news-card">
+                    <h3 class="news-title">{{ news.title }}</h3>
+                    <p class="news-content">{{ news.content[:200] }}...</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="news-date">Posted on: {{ news.date_posted.strftime('%B %d, %Y') }}</span>
+                        {% if session.get('staff_id') %}
+                            <form action="{{ url_for('delete_news', news_id=news.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="read-more" onclick="return confirm('Are you sure you want to delete this news?')">Delete News</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center">
+                <p>No news articles available at the moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

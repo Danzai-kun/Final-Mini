@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduChoice</title>
+<style>
+/* Original styles */
+.hero-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));
+    color: white;
+}
+
+/* ... (rest of original styles) ... */
+
+/* Login button and dropdown styles */
+.login-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+.login-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    background: #3B82F6;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.login-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #1E293B;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    margin-top: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.login-dropdown a {
+    color: #F1F5F9;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.login-dropdown a:hover {
+    background-color: #2D3748;
+}
+
+.show {
+    display: block;
+}
+
+/* Enhanced login overlay styles */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-modal {
+    background: #1E293B;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #334155;
+    color: #F1F5F9;
+    position: relative;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #F1F5F9;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #CBD5E1;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    background: #0F172A;
+    color: #F1F5F9;
+}
+
+.form-group input:focus {
+    border-color: #3B82F6;
+    outline: none;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    cursor: pointer;
+    color: #CBD5E1;
+    background: none;
+    border: none;
+    padding: 5px;
+}
+
+.error-message {
+    color: #EF4444;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #3B82F6, #6366F1);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+</style>
+</head>
+<body>
+
+<div class="hero-section">
+    <h1 class="animate-title">Welcome to EduChoice</h1>
+    <h2 class="animate-subtitle">Your Trusted Website for University Program Recommendations</h2>
+    
+    <div class="login-container">
+        <button onclick="toggleDropdown()" class="login-btn">Login</button>
+        <div id="loginDropdown" class="login-dropdown">
+            <a href="#" onclick="showLogin('admin')">Login as Admin</a>
+            <a href="#" onclick="showLogin('staff')">Login as Staff</a>
+            <a href="#" onclick="showLogin('counsellor')">Login as Counsellor</a>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Login Overlay -->
+<div id="adminLogin" class="login-overlay">
+    <div class="login-modal">
+        <button class="close-btn" onclick="hideLogin('admin')">&times;</button>
+        <h2 style="text-align: center; margin-bottom: 2rem;">Admin Login</h2>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminUsername">Username</label>
+                <input type="text" id="adminUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('adminPassword')">👁️</button>
+                <div class="error-message" id="admin-password-error"></div>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- Staff Login Overlay -->
+<div id="staffLogin" class="login-overlay">
+    <div class="login-modal">
+        <button class="close-btn" onclick="hideLogin('staff')">&times;</button>
+        <h2 style="text-align: center; margin-bottom: 2rem;">Staff Login</h2>
+        <form id="staffLoginForm">
+            <div class="form-group">
+                <label for="staffEmail">Email</label>
+                <input type="email" id="staffEmail" required>
+                <div class="error-message" id="staff-email-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="staffPosition">Position</label>
+                <input type="text" id="staffPosition" required>
+                <div class="error-message" id="staff-position-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="staffPassword">Password</label>
+                <input type="password" id="staffPassword" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('staffPassword')">👁️</button>
+                <div class="error-message" id="staff-password-error"></div>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- Counsellor Login Overlay -->
+<div id="counsellorLogin" class="login-overlay">
+    <div class="login-modal">
+        <button class="close-btn" onclick="hideLogin('counsellor')">&times;</button>
+        <h2 style="text-align: center; margin-bottom: 2rem;">Counsellor Login</h2>
+        <form id="counsellorLoginForm">
+            <div class="form-group">
+                <label for="counsellorEmail">Email</label>
+                <input type="email" id="counsellorEmail" required>
+                <div class="error-message" id="counsellor-email-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="counsellorPassword">Password</label>
+                <input type="password" id="counsellorPassword" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('counsellorPassword')">👁️</button>
+                <div class="error-message" id="counsellor-password-error"></div>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleDropdown() {
+    document.getElementById("loginDropdown").classList.toggle("show");
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.login-btn')) {
+        var dropdowns = document.getElementsByClassName("login-dropdown");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+function showLogin(type) {
+    document.getElementById("loginDropdown").classList.remove("show");
+    document.getElementById(type + 'Login').style.display = 'flex';
+}
+
+function hideLogin(type) {
+    document.getElementById(type + 'Login').style.display = 'none';
+}
+
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+    } else {
+        input.type = 'password';
+    }
+}
+
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+}
+
+document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        username: document.getElementById('adminUsername').value.trim(),
+        password: document.getElementById('adminPassword').value
+    };
+
+    try {
+        const response = await fetch('/admin/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            window.location.href = data.redirect || '/admin/dashboard';
+        } else {
+            showError('admin-password-error', data.message || 'Invalid credentials');
+        }
+    } catch (error) {
+        showError('admin-password-error', 'An error occurred. Please try again.');
+    }
+});
+
+document.getElementById('staffLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        email: document.getElementById('staffEmail').value.trim(),
+        position: document.getElementById('staffPosition').value.trim(),
+        password: document.getElementById('staffPassword').value
+    };
+
+    try {
+        const response = await fetch('/staff/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            window.location.href = '/staff/dashboard';
+        } else {
+            showError('staff-password-error', data.message || 'Invalid credentials');
+        }
+    } catch (error) {
+        showError('staff-password-error', 'An error occurred. Please try again.');
+    }
+});
+
+document.getElementById('counsellorLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('Form submitted');
+    
+    const formData = {
+        email: document.getElementById('counsellorEmail').value.trim(),
+        password: document.getElementById('counsellorPassword').value
+    };
+
+    console.log('Form data:', formData);
+
+    try {
+        const response = await fetch('/counsellor/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        console.log('Response:', response.status);
+        const responseData = await response.json();
+        console.log('Response data:', responseData);
+
+        if (responseData.success) {
+            window.location.href = responseData.redirect || '/counsellor/dashboard';
+        } else {
+            showError('counsellor-password-error', responseData.message || 'Login failed');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showError('counsellor-password-error', 'An error occurred during login');
+    }
+});
+</script>
+
+</body>
+</html>

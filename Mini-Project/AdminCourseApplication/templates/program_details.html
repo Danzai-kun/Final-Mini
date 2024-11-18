@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0F172A;
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: #1E293B;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            border: 1px solid #334155;
+            margin: 2rem auto;
+            width: 90%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #2563EB, #38BDF8);
+        }
+
+        h2 {
+            color: #38BDF8;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2rem;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .program-card {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            color: #CBD5E1;
+        }
+
+        .card-title {
+            color: #38BDF8;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .university {
+            color: #94A3B8;
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            color: #E2E8F0;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .duration {
+            color: #CBD5E1;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .view-details {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            width: 48%;
+            cursor: pointer;
+        }
+
+        .view-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #2563EB, #38BDF8);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1E293B;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: #94A3B8;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body h6 {
+            color: #38BDF8;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .modal-body p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .delete-program {
+            background: linear-gradient(135deg, #F87171, #EF4444);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            width: 48%;
+            cursor: pointer;
+        }
+
+        .delete-program:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(248, 113, 113, 0.3);
+            background: linear-gradient(135deg, #EF4444, #F87171);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Available Programs</h2>
+            <a href="/staff/dashboard" class="back-btn">Back to Dashboard</a>
+        </div>
+            {% for program in programs %}
+            <div class="program-card">
+                {% if program.program_image %}
+                    <img src="data:image/jpeg;base64,{{ program.program_image }}" 
+                        class="card-image" alt="{{ program.Program_name }}">
+                {% endif %}
+                <div class="card-content">
+                    <h3 class="card-title">{{ program.Program_name }}</h3>
+                    <div class="university">{{ program.university }}</div>
+                    <p class="description">{{ program.Program_description[:150] }}...</p>
+                    <div class="duration">Duration: {{ program.duration }}</div>
+                    <div class="button-group">
+                        <button class="view-details" onclick="openModal('modal{{ program.id }}')">
+                            View Details
+                        </button>
+                        <button class="delete-program" onclick="deleteProgram('{{ program.id }}')">
+                            Delete Program
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal{{ program.id }}" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>{{ program.Program_name }}</h3>
+                        <button class="close-button" onclick="closeModal('modal{{ program.id }}')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        {% if program.program_image %}
+                        <img src="data:image/jpeg;base64,{{ program.program_image }}" 
+                             alt="{{ program.Program_name }}">
+                        {% endif %}
+                        <h6>University</h6>
+                        <p>{{ program.university }}</p>
+                        <h6>Description</h6>
+                        <p>{{ program.Program_description }}</p>
+                        <h6>Duration</h6>
+                        <p>{{ program.duration }}</p>
+                        <h6>Career Prospects</h6>
+                        <p>{{ program.career_prospects }}</p>
+                        <h6>Requirements</h6>
+                        <p>{{ program.requirements }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not programs %}
+            <div class="text-center mt-4">
+                <p>No programs found.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function deleteProgram(programId) {
+            if (confirm('Are you sure you want to delete this program?')) {
+                // Make an AJAX request to delete the program
+                fetch(`/delete_program/${programId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Program deleted successfully.');
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert('Failed to delete the program.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>

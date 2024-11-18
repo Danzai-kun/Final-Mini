@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Explorer</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        /* Filter Section */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Cost range specific styles */
+        .cost-range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cost-range-container input[type="range"] {
+            flex-grow: 1;
+        }
+
+        .cost-range-container .cost-value {
+            min-width: 150px;
+            text-align: right;
+            color: #666;
+        }
+
+        /* Comparison Tool */
+        .comparison-tool {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .course-select {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Course List */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section h3 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+            }
+            
+            .course-select {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Explorer</h1>
+        
+        <!-- Filter Section -->
+        <div class="filters">
+            <h2>Filter Courses</h2>
+            <div class="filter-group">
+                <label for="duration">Duration:</label>
+                <select id="duration">
+                    <option value="">All Durations</option>
+                    <option value="6months">6 Months</option>
+                    <option value="1year">1 Year</option>
+                    <option value="2years">2 Years</option>
+                    <option value="3years">3 Years</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="field">Field of Study:</label>
+                <select id="field">
+                    <option value="">All Fields</option>
+                    <option value="technology">Technology</option>
+                    <option value="business">Business</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="arts">Arts</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="qualification">Qualification Level:</label>
+                <select id="qualification">
+                    <option value="">All Levels</option>
+                    <option value="certificate">Certificate</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="bachelor">Bachelor's Degree</option>
+                    <option value="master">Master's Degree</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="cost">Cost Range:</label>
+                <div class="cost-range-container">
+                    <input type="range" id="cost" min="0" max="100000" step="1000" value="50000">
+                    <span class="cost-value" id="costValue">$50,000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Comparison Tool -->
+        <div class="comparison-tool">
+            <h2>Compare Courses</h2>
+            <div class="comparison-container">
+                <div class="course-select">
+                    <select id="course1">
+                        <option value="">Select Course 1</option>
+                    </select>
+                    <select id="course2">
+                        <option value="">Select Course 2</option>
+                    </select>
+                </div>
+                <button id="compareCourses">Compare</button>
+            </div>
+        </div>
+
+        <!-- Course List -->
+        <div class="course-list">
+            <h2>Available Courses</h2>
+            <div class="course-grid" id="courseGrid">
+                <!-- Course cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Course Details Modal -->
+        <div id="courseModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle"></h2>
+                
+                <div class="course-details">
+                    <div class="detail-section">
+                        <h3>Curriculum</h3>
+                        <div id="curriculum"></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3>Career Prospects</h3>
+                        <div id="careerProspects"></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3>Required Qualifications</h3>
+                        <div id="requiredQualifications"></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h3>Cost Structure</h3>
+                        <div id="costStructure"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cost range slider functionality
+        const costSlider = document.getElementById('cost');
+        const costValue = document.getElementById('costValue');
+
+        costSlider.addEventListener('input', function() {
+            const value = this.value;
+            costValue.textContent = `$${parseInt(value).toLocaleString()}`;
+        });
+    </script>
+    <script src="courseExplorer.js"></script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0F172A;
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: #1E293B;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            border: 1px solid #334155;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+        }
+
+        h2 {
+            color: #38BDF8;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #38BDF8, #2563EB);
+        }
+
+        .form-label {
+            color: #CBD5E1;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+        }
+
+        .form-control:focus {
+            border-color: #38BDF8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+            background: #0F172A;
+            color: #F1F5F9;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #2563EB, #38BDF8);
+        }
+
+        .management-section {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 80vh;
+            background: #1E293B;
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            box-shadow: 0 0 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            border-radius: 15px;
+        }
+
+        .management-section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #F1F5F9;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-success {
+            background: #064E3B;
+            border: 1px solid #059669;
+            color: #ECFDF5;
+        }
+
+        .alert-danger {
+            background: #7F1D1D;
+            border: 1px solid #DC2626;
+            color: #FEE2E2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .management-section {
+                width: 90%;
+                height: 90vh;
+            }
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Staff Dashboard</h2>
+            <a href="/staff/logout" class="btn btn-danger" onclick="handleLogout(event)">Logout</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage News</h3>
+                    <p class="text-center mb-4">Post and manage news updates</p>
+                    <button class="btn btn-primary" onclick="showSection('news')">Manage News</button>
+                    <button class="btn btn-primary mt-2" onclick="viewNewsList()">View News</button>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage University</h3>
+                    <p class="text-center mb-4">Update university information</p>
+                    <button class="btn btn-primary" onclick="showSection('university')">Manage University</button>
+                    <a href="/staff/universities" class="btn btn-primary mt-2">View Universities</a>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage Programs</h3>
+                    <p class="text-center mb-4">Add and update university programs</p>
+                    <button class="btn btn-primary" onclick="showSection('program')">Manage Programs</button>
+                    <button class="btn btn-primary mt-2" onclick="window.location.href='/programs'">View Programs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- News Management Section -->
+    <div id="newsSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('news')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">News Management</h3>
+        <form id="newsForm">
+            <div class="mb-3">
+                <label for="newsTitle" class="form-label">News Title</label>
+                <input type="text" class="form-control" id="newsTitle" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="newsContent" class="form-label">Content</label>
+                <textarea class="form-control" id="newsContent" rows="6" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Post News</button>
+        </form>
+    </div>
+
+    <!-- View News Section -->
+    <div id="viewNewsSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('viewNews')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">View News</h3>
+        <div id="newsList">
+            <!-- News list will be populated here -->
+        </div>
+    </div>
+
+    <!-- University Management Section -->
+    <div id="universitySection" class="management-section">
+        <button class="close-btn" onclick="hideSection('university')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">University Management</h3>
+        <form id="universityForm">
+            <div class="mb-3">
+                <label for="universityName" class="form-label">University Name</label>
+                <input type="text" class="form-control" id="universityName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="universityDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="universityDescription" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="universityRanking" class="form-label">Ranking</label>
+                <input type="number" class="form-control" id="universityRanking" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="admissionRequirements" class="form-label">Admission Requirements</label>
+                <textarea class="form-control" id="admissionRequirements" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="admissionDeadline" class="form-label">Admission Deadline</label>
+                <input type="date" class="form-control" id="admissionDeadline" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="careerProspects" class="form-label">Career Prospects</label>
+                <textarea class="form-control" id="careerProspects" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update University Information</button>
+        </form>
+    </div>
+
+    <!-- Program Management Section -->
+    <div id="programSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('program')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">Program Management</h3>
+        <form id="programForm">
+            <div class="mb-3">
+                <label for="programName" class="form-label">Program Name</label>
+                <input type="text" class="form-control" id="programName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="programDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="programDescription" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="universitySelect" class="form-label">University</label>
+                <select class="form-control" id="universitySelect" required>
+                    <option value="">Loading universities...</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration</label>
+                <input type="text" class="form-control" id="duration" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="programRequirements" class="form-label">Requirements</label>
+                <textarea class="form-control" id="programRequirements" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="programCareerProspects" class="form-label">Career Prospects</label>
+                <textarea class="form-control" id="programCareerProspects" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Program</button>
+        </form>
+    </div>
+
+    <!-- View Programs Section -->
+    <div id="viewProgramsSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('viewPrograms')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">View Programs</h3>
+        <div id="programsList">
+            <!-- Programs list will be populated here -->
+        </div>
+    </div>
+
+    <div class="alert alert-success" role="alert" id="successAlert"></div>
+    <div class="alert alert-danger" role="alert" id="errorAlert"></div>
+
+    <script>
+        function showSection(section) {
+            document.getElementById(section + 'Section').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            if (section === 'program') {
+                loadUniversities().catch(error => {
+                    console.error('Failed to load universities:', error);
+                    showAlert('error', 'Failed to load universities. Please try again.');
+                });
+            } else if (section === 'viewUniversity') {
+                loadUniversityList().catch(error => {
+                    console.error('Failed to load university list:', error);
+                    showAlert('error', 'Failed to load university list. Please try again.');
+                });
+            }
+        }
+
+        function hideSection(section) {
+            document.getElementById(section + 'Section').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showAlert(type, message) {
+            const alert = document.getElementById(type + 'Alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('newsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('newsTitle').value,
+                content: document.getElementById('newsContent').value
+            };
+
+            try {
+                const response = await fetch('/staff/news', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('success', 'News posted successfully!');
+                    document.getElementById('newsForm').reset();
+                    hideSection('news');
+                } else {
+                    showAlert('error', data.message || 'Error posting news');
+                }
+            } catch (error) {
+                showAlert('error', 'Error submitting form');
+            }
+        });
+
+        document.getElementById('universityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('universityName').value,
+                description: document.getElementById('universityDescription').value,
+                ranking: document.getElementById('universityRanking').value,
+                requirements: document.getElementById('admissionRequirements').value,
+                deadline: document.getElementById('admissionDeadline').value,
+                prospects: document.getElementById('careerProspects').value
+            };
+
+            try {
+                const response = await fetch('/staff/university', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('success', 'University information added successfully!');
+                    document.getElementById('universityForm').reset();
+                    hideSection('university');
+                    await loadUniversities();
+                } else {
+                    showAlert('error', data.message || 'Error adding university information');
+                }
+            } catch (error) {
+                showAlert('error', 'Error submitting form');
+            }
+        });
+
+        document.getElementById('programForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const universitySelect = document.getElementById('universitySelect');
+            if (!universitySelect.value) {
+                showAlert('error', 'Please select a university. If none are available, create one first.');
+                return;
+            }
+            
+            const formData = {
+                name: document.getElementById('programName').value,
+                description: document.getElementById('programDescription').value,
+                university_id: document.getElementById('universitySelect').value,
+                duration: document.getElementById('duration').value,
+                requirements: document.getElementById('programRequirements').value,
+                career_prospects: document.getElementById('programCareerProspects').value
+            };
+
+            try {
+                const response = await fetch('/staff/program', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('success', 'Program added successfully!');
+                    document.getElementById('programForm').reset();
+                    hideSection('program');
+                } else {
+                    showAlert('error', data.message || 'Error adding program');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'Error submitting form');
+            }
+        });
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.querySelectorAll('.management-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            this.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Prevent going back to protected pages after logout
+        window.onload = function() {
+            if(window.history.pushState) {
+                window.history.pushState(null, null, window.location.href);
+            }
+            window.onpopstate = function() {
+                window.history.go(1);
+            };
+        };
+
+        // Prevent browser back button after logout
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // Add this function to populate universities dropdown when program section is opened
+        async function loadUniversities() {
+            try {
+                const response = await fetch('/staff/universities', {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                if (data.success && data.universities) {
+                    const select = document.getElementById('universitySelect');
+                    select.innerHTML = '<option value="">Select University</option>';
+                    
+                    if (data.universities.length === 0) {
+                        select.innerHTML += '<option value="" disabled>No universities available</option>';
+                        showAlert('error', 'Please add a university first');
+                        return;
+                    }
+
+                    data.universities.forEach(university => {
+                        select.innerHTML += `<option value="${university.id}">${university.name}</option>`;
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to load universities');
+                }
+            } catch (error) {
+                console.error('Error loading universities:', error);
+                showAlert('error', 'Error loading universities. Please try again.');
+            }
+        }
+
+        function handleLogout(event) {
+            event.preventDefault();
+            window.location.href = '/staff/logout';
+        }
+
+        function viewNewsList() {
+            window.location.href = '/staff/news-list';
+        }
+    </script>
+</body>
+</html> 

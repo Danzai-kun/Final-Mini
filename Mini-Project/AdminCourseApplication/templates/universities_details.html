@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universities</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0F172A;
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: #1E293B;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            border: 1px solid #334155;
+            margin: 2rem auto;
+        }
+
+        .university-card {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .university-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+            border-color: #38BDF8;
+        }
+
+        h2 {
+            color: #38BDF8;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #38BDF8, #2563EB);
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #2563EB, #38BDF8);
+            color: #F1F5F9;
+        }
+
+        .ranking-badge {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .deadline {
+            color: #94A3B8;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .program-count {
+            color: #38BDF8;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+            color: #F1F5F9;
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: center;
+            margin-top: 1rem;
+            margin-left: 1rem;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: #F1F5F9;
+        }
+
+        .navbar-brand-container {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Universities</h2>
+            <a class="btn-dashboard" href="/staff/dashboard">Back to Dashboard</a>
+        </div>
+        
+        <div class="row">
+            {% for university in universities %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="university-card">
+                    <div class="ranking-badge">
+                        Ranking: #{{ university.ranking }}
+                    </div>
+                    <h3>{{ university.name }}</h3>
+                    <p>{{ university.description[:150] }}{% if university.description|length > 150 %}...{% endif %}</p>
+                    
+                    {% if university.admission_deadline %}
+                    <div class="deadline">
+                        Application Deadline: {{ university.admission_deadline.strftime('%B %d, %Y') }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="program-count">
+                        Available Programs: {{ university.program_count }}
+                    </div>
+                    
+                    <button onclick="deleteUniversity({{ university.id }})" class="btn-delete">
+                        Delete University
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p>No universities available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        async function deleteUniversity(universityId) {
+            if (!confirm('Are you sure you want to delete this university? This will also delete all associated programs.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/staff/university/${universityId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Remove the university card from the DOM
+                    const card = document.querySelector(`[data-university-id="${universityId}"]`);
+                    if (card) {
+                        card.closest('.col-md-6').remove();
+                    }
+                    
+                    // Show success message
+                    alert('University deleted successfully');
+                    
+                    // Reload the page to update the list
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Error deleting university');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting university');
+            }
+        }
+    </script>
+</body>
+</html>

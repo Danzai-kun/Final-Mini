@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0F172A;
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: #F1F5F9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: #1E293B;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            border: 1px solid #334155;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+        }
+
+        h2 {
+            color: #38BDF8;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #38BDF8, #2563EB);
+        }
+
+        .form-label {
+            color: #CBD5E1;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background: #0F172A;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+            color: #F1F5F9;
+        }
+
+        .form-control:focus {
+            border-color: #38BDF8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+            background: #0F172A;
+            color: #F1F5F9;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #38BDF8, #2563EB);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
+            background: linear-gradient(135deg, #2563EB, #38BDF8);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-success {
+            background: #064E3B;
+            border: 1px solid #059669;
+            color: #ECFDF5;
+        }
+
+        .alert-danger {
+            background: #7F1D1D;
+            border: 1px solid #DC2626;
+            color: #FEE2E2;
+        }
+
+        .management-section {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 80vh;
+            background: #1E293B;
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            box-shadow: 0 0 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            border-radius: 15px;
+        }
+
+        .management-section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #F1F5F9;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from { transform: translate(-50%, -45%); opacity: 0; }
+            to { transform: translate(-50%, -50%); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .management-section {
+                width: 90%;
+                height: 90vh;
+            }
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+        }
+
+        .btn-secondary {
+            background: #334155;
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 8px;
+            color: #F1F5F9;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            animation: shake 0.5s linear;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Admin Dashboard</h2>
+            <a href="/admin/logout" class="btn btn-danger" style="width: auto;" onclick="handleLogout(event)">Logout</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage Staff</h3>
+                    <p class="text-center mb-4">Add new staff members to the system</p>
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn btn-primary" onclick="showSection('staff')">Add Staff</button>
+                        <a href="/admin/staff-details" class="btn btn-secondary">View Staff Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage Counsellors</h3>
+                    <p class="text-center mb-4">Manage counsellor information</p>
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn btn-primary" onclick="showSection('counsellor')">Manage Counsellors</button>
+                        <a href="/admin/counsellor-details" class="btn btn-secondary">View Counsellor Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <h3 class="text-center mb-4" style="color: #38BDF8;">Manage Courses</h3>
+                    <p class="text-center mb-4">Add and manage courses</p>
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn btn-primary" onclick="showSection('course')">Add Course</button>
+                        <a href="/course-library-details" class="btn btn-secondary">View Course Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Staff Management Section -->
+    <div id="staffSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('staff')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">Staff Management</h3>
+        <form id="staffForm">
+            <div class="mb-3">
+                <label for="staffName" class="form-label">Staff Name</label>
+                <input type="text" class="form-control" id="staffName" name="name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="staffEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="staffEmail" name="email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="staffPosition" class="form-label">Position</label>
+                <input type="text" class="form-control" id="staffPosition" name="position" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="staffPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="staffPassword" name="password" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="staffImage" class="form-label">Profile Picture</label>
+                <input type="file" class="form-control" id="staffImage" name="profile_picture" accept=".jpg,.jpeg,.png,.gif">
+                <small class="text-muted">Max file size: 3MB. Allowed formats: JPG, JPEG, PNG, GIF</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Staff Member</button>
+        </form>
+    </div>
+
+    <!-- Add new Counsellor Management Section -->
+    <div id="counsellorSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('counsellor')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">Counsellor Management</h3>
+        <form id="counsellorForm">
+            <div class="mb-3">
+                <label for="counsellorName" class="form-label">Counsellor Name</label>
+                <input type="text" class="form-control" id="counsellorName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="counsellorEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="counsellorEmail" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="counsellorPhone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="counsellorPhone" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="counsellorDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="counsellorDescription" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="counsellorPassword" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="counsellorPassword" required>
+                    <button type="button" class="btn btn-secondary" onclick="generatePassword('counsellorPassword')">Generate</button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="counsellorImage" class="form-label">Profile Picture</label>
+                <input type="file" class="form-control" id="counsellorImage" accept=".jpg,.jpeg,.png,.gif">
+                <small class="text-muted">Max file size: 5MB. Allowed formats: JPG, JPEG, PNG, GIF</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Counsellor</button>
+        </form>
+    </div>
+
+    <!-- Add new Course Management Section -->
+    <div id="courseSection" class="management-section">
+        <button class="close-btn" onclick="hideSection('course')">&times;</button>
+        <h3 class="mb-4" style="color: #38BDF8;">Course Management</h3>
+        <form id="courseForm">
+            <div class="mb-3">
+                <label for="courseName" class="form-label">Course Name</label>
+                <input type="text" class="form-control" id="courseName" name="name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="courseDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="courseDescription" name="description" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="careerProspects" class="form-label">Career Prospects</label>
+                <textarea class="form-control" id="careerProspects" name="career_prospects" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="courseImage" class="form-label">Course Image</label>
+                <input type="file" class="form-control" id="courseImage" name="course_picture" accept=".jpg,.jpeg,.png,.gif">
+                <small class="text-muted">Max file size: 5MB. Allowed formats: JPG, JPEG, PNG, GIF</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Course</button>
+        </form>
+    </div>
+
+    <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+    <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+
+    <script>
+        function showSection(section) {
+            document.getElementById(section + 'Section').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideSection(section) {
+            document.getElementById(section + 'Section').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.querySelectorAll('.management-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            this.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        function showAlert(type, message) {
+            const alert = document.getElementById(type + 'Alert');
+            if (alert) {
+                alert.textContent = message;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        document.getElementById(`counsellorForm`).addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('counsellorName').value.trim(),
+                email: document.getElementById('counsellorEmail').value.trim(),
+                phone: document.getElementById('counsellorPhone').value.trim(),
+                description: document.getElementById('counsellorDescription').value.trim(),
+                password: document.getElementById('counsellorPassword').value
+            };
+
+            try {
+                // Basic field validation
+                for (const [key, value] of Object.entries(formData)) {
+                    if (!value) {
+                        throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
+                    }
+                }
+
+                // Email format validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                // Phone format validation
+                const phoneRegex = /^\+?[\d\s-]{10,}$/;
+                if (!phoneRegex.test(formData.phone)) {
+                    throw new Error('Please enter a valid phone number');
+                }
+
+                // File handling
+                const fileInput = document.getElementById('counsellorImage');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    if (file.size > 5 * 1024 * 1024) {
+                        throw new Error('File size must be less than 5MB');
+                    }
+                    
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        throw new Error('Only JPG, PNG, and GIF files are allowed');
+                    }
+                    
+                    formData.profile_picture = await convertFileToBase64(file);
+                }
+
+                // API call
+                const response = await fetch('/admin/add-counsellor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error adding counsellor');
+                }
+
+                showAlert('success', 'Counsellor added successfully!');
+                document.getElementById('counsellorForm').reset();
+                hideSection('counsellor');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', error.message);
+            }
+        });
+
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function generatePassword(inputId, length = 10) {
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            const input = document.getElementById(inputId);
+            input.value = password;
+            input.setAttribute('readonly', true);
+        }
+
+        // Prevent back navigation after logout
+        window.onload = function() {
+            if(window.history.pushState) {
+                window.history.pushState(null, null, window.location.href);
+            }
+            window.onpopstate = function() {
+                window.history.go(1);
+            };
+        };
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        function deleteRecord(type, id) {
+            if (!confirm(`Are you sure you want to delete this ${type}?`)) {
+                return;
+            }
+
+            fetch(`/admin/delete-${type}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const element = document.querySelector(`[data-${type}-id="${id}"]`);
+                    if (element) {
+                        element.remove();
+                        showAlert('success', `${type} deleted successfully`);
+                    } else {
+                        console.error(`Element with data-${type}-id="${id}" not found`);
+                    }
+                } else {
+                    throw new Error(data.message || `Failed to delete ${type}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', `Error deleting ${type}: ${error.message}`);
+            });
+        }
+
+        document.getElementById('staffForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = {
+                name: document.getElementById('staffName').value.trim(),
+                email: document.getElementById('staffEmail').value.trim(),
+                position: document.getElementById('staffPosition').value.trim(),
+                password: document.getElementById('staffPassword').value
+            };
+
+            try {
+                // Basic field validation
+                for (const [key, value] of Object.entries(formData)) {
+                    if (!value) {
+                        throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
+                    }
+                }
+
+                // Email format validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                // File validation
+                const fileInput = document.getElementById('staffImage');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    if (file.size > 3 * 1024 * 1024) {
+                        throw new Error('File size must be less than 3MB');
+                    }
+                    
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        throw new Error('Only JPG, PNG, and GIF files are allowed');
+                    }
+                    
+                    formData.profile_picture = await convertFileToBase64(file);
+                }
+
+                // API call
+                const response = await fetch('/admin/add-staff', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    switch (response.status) {
+                        case 409:
+                            throw new Error('A staff member with this email already exists');
+                        case 400:
+                            throw new Error(data.message || 'Invalid input data');
+                        case 403:
+                            throw new Error('You do not have permission to add staff');
+                        default:
+                            throw new Error(data.message || 'Error adding staff member');
+                    }
+                }
+
+                // Success case
+                showAlert('success', 'Staff member added successfully!');
+                document.getElementById('staffForm').reset();
+                hideSection('staff');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', error.message);
+                
+                if (error.message.includes('email already exists')) {
+                    const emailInput = document.getElementById('staffEmail');
+                    emailInput.classList.add('is-invalid');
+                    setTimeout(() => {
+                        emailInput.classList.remove('is-invalid');
+                    }, 3000);
+                }
+            }
+        });
+
+        function handleLogout(event) {
+            event.preventDefault();
+            
+            // Redirect directly to the logout URL
+            window.location.href = '/admin/logout';
+        }
+
+        // Prevent back button after logout
+        window.addEventListener('popstate', function(event) {
+            const currentPath = window.location.pathname;
+            if (currentPath === '/admin/login') {
+                window.history.forward();
+            }
+        });
+
+        document.getElementById('courseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('courseName').value.trim(),
+                description: document.getElementById('courseDescription').value.trim(),
+                career_prospects: document.getElementById('careerProspects').value.trim()
+            };
+
+            try {
+                // Basic field validation
+                for (const [key, value] of Object.entries(formData)) {
+                    if (!value) {
+                        throw new Error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
+                    }
+                }
+
+                // File handling
+                const fileInput = document.getElementById('courseImage');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    if (file.size > 5 * 1024 * 1024) {
+                        throw new Error('File size must be less than 5MB');
+                    }
+                    
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        throw new Error('Only JPG, PNG, and GIF files are allowed');
+                    }
+                    
+                    formData.course_picture = await convertFileToBase64(file);
+                }
+
+                // API call
+                const response = await fetch('/admin/add-course', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error adding course');
+                }
+
+                showAlert('success', 'Course added successfully!');
+                document.getElementById('courseForm').reset();
+                hideSection('course');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', error.message);
+            }
+        });
+    </script>
+</body>
+</html>
