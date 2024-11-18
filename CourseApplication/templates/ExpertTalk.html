@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Talk - Counsellors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: #2c3e50;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 80px 2rem 0; /* Added top padding to account for fixed navbar */
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .card p {
+            margin-bottom: 0.5rem;
+            color: #34495e;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Add these new styles for the profile picture */
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid #3498db;
+        }
+
+        .profile-picture-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 3px solid #3498db;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .registration-form {
+            margin-top: 1rem;
+        }
+
+        .registration-form button {
+            width: 100%;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background-color: #2ecc71;
+        }
+
+        .notification.error {
+            background-color: #e74c3c;
+        }
+
+        .notification.info {
+            background-color: #3498db;
+        }
+
+        .debug-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        #loading {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .profile-image {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-picture, 
+        .profile-picture-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/Home" class="navbar-brand">Course Application</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h2>Our Counsellors</h2>
+        
+        <!-- Debug information -->
+        <div class="debug-info" style="margin-bottom: 20px;">
+            {% if counsellors %}
+                <p>Found {{ counsellors|length }} counsellor(s)</p>
+            {% else %}
+                <p>No counsellors found in the database</p>
+            {% endif %}
+        </div>
+
+        <!-- Error message handling -->
+        {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
+        <!-- Loading state -->
+        <div id="loading" style="display: none; text-align: center;">
+            <p>Loading counsellors...</p>
+        </div>
+
+        <!-- Counsellors grid -->
+        <div class="cards-grid">
+            {% for counsellor in counsellors %}
+            <div class="card">
+                <div class="profile-image">
+                    {% if counsellor.profile_picture %}
+                        <img src="data:image/jpeg;base64,{{ counsellor.profile_picture|b64encode }}" 
+                             alt="{{ counsellor.counsellor_name }}" 
+                             class="profile-picture"
+                             onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'profile-picture-placeholder\'><i class=\'fas fa-user fa-4x\'></i></div>';">
+                    {% else %}
+                        <div class="profile-picture-placeholder">
+                            <i class="fas fa-user fa-4x"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h5 class="card-title">{{ counsellor.counsellor_name }}</h5>
+                <p class="card-text">{{ counsellor.counsellor_description or 'No description available' }}</p>
+                <p><strong>Email:</strong> {{ counsellor.counsellor_email }}</p>
+                <p><strong>Phone:</strong> {{ counsellor.counsellor_Pno }}</p>
+                
+                <a href="{{ url_for('counsellor_registration', counsellor_id=counsellor.Counsellor_id) }}" 
+                   class="btn"
+                   onclick="return confirmRegistration()">
+                    Schedule with {{ counsellor.counsellor_name }}
+                </a>
+            </div>
+            {% else %}
+            <div class="alert alert-info full-width">
+                <p>No counsellors are currently available. Please check back later.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Add this at the top of the body, after the navbar -->
+    <div id="error-message" class="alert alert-danger" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+    <!-- Add this notification container -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Add this JavaScript at the bottom of the file, before </body> -->
+    <script>
+    function showNotification(message, type = 'info') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+    }
+
+    // Confirmation before registration
+    function confirmRegistration() {
+        return confirm('Would you like to schedule a session with this counsellor?');
+    }
+
+    // Show loading state
+    function showLoading() {
+        document.getElementById('loading').style.display = 'block';
+    }
+
+    // Hide loading state
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    // Enhanced notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+    }
+
+    // Error handling for image loading
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.profile-picture');
+        images.forEach(img => {
+            img.onerror = function() {
+                this.onerror = null;
+                const placeholder = document.createElement('div');
+                placeholder.className = 'profile-picture-placeholder';
+                placeholder.innerHTML = '<i class="fas fa-user fa-4x"></i>';
+                this.parentNode.replaceChild(placeholder, this);
+            };
+        });
+    });
+    </script>
+</body>
+</html>

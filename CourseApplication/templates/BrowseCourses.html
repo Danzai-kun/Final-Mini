@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Courses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: #1a237e;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Header section */
+        .header-section {
+            background: linear-gradient(135deg, #1a237e, #3949ab);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-description {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Course Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .program-header {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .program-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+        }
+
+        .program-title {
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .university-name {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .program-details {
+            padding: 2rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item strong {
+            color: #1565c0;
+        }
+
+        .detail-item p {
+            color: #37474f;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .program-footer {
+            padding: 1rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .view-details-btn {
+            display: inline-block;
+            background: #1565c0;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background: #1a237e;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2.5rem;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="navbar-brand">EduChoice</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="#">Profile</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <h1 class="header-title">Discover Your Future</h1>
+        <p class="header-description">Explore our curated collection of world-class courses designed to transform your career and unlock your potential.</p>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="courses-grid">
+        {% if programs %}
+            {% for program in programs %}
+            <div class="program-card">
+                <div class="program-header">
+                    <h3 class="program-title">{{ program.Program_name }}</h3>
+                    <div class="university-name">{{ program.university }}</div>
+                </div>
+                
+                <div class="program-details">
+                    <div class="detail-item">
+                        <strong>Duration:</strong> {{ program.duration }}
+                    </div>
+                    <div class="detail-item">
+                        <p>{{ program.Program_description[:150] }}{% if program.Program_description|length > 150 %}...{% endif %}</p>
+                    </div>
+                </div>
+
+                <div class="program-footer">
+                    <a href="{{ url_for('program_details', program_id=program.Program_id) }}" class="view-details-btn">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No programs available at the moment.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
